@@ -139,50 +139,6 @@ main.jsx
                 └── Player.jsx (Now Playing Info, Transport Controls, Seek Bar, Volume/Aux Icons)
 ```
 
-### Architectural Data Flow & State Management
-
-```mermaid
-flowchart TD
-    subgraph UI_Layer["User Interface Layer"]
-        SI["SongItem / DisplayAlbum Row"]
-        P_UI["Player Controls (Play / Pause / Next / Prev)"]
-        SB_UI["Seek Bar (Click Event)"]
-        DISP["Display Component (Gradient Theme)"]
-    end
-
-    subgraph Context_Layer["PlayerContext (Global State)"]
-        State_Track["track: Song Object"]
-        State_Play["playStatus: Boolean"]
-        State_Time["time: { currentTime, totalTime }"]
-        Methods["play(), pause(), playWithId(), previous(), next(), seekSong()"]
-    end
-
-    subgraph DOM_Layer["Native Browser APIs"]
-        AudioDOM["HTML5 <audio ref={audioRef}> Element"]
-        Events["ontimeupdate Event Listener"]
-    end
-
-    SI -- "playWithId(id)" --> Methods
-    P_UI -- "play() / pause() / next() / previous()" --> Methods
-    SB_UI -- "seekSong(e) [Calculates Offset %]" --> Methods
-
-    Methods --> AudioDOM
-    Methods --> State_Track
-    Methods --> State_Play
-
-    AudioDOM -- "Continuous ontimeupdate" --> Events
-    Events --> State_Time
-    Events -- "Updates inline style width" --> SB_UI
-
-    State_Track --> P_UI
-    State_Play --> P_UI
-    State_Time --> P_UI
-
-    DISP -- "Reads location.pathname & albumId" --> DISP
-```
-
----
-
 ## 📁 Project Folder Structure
 
 ```text
